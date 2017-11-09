@@ -1,0 +1,8 @@
+[template]
+src = "bitcoin.conf.tmpl"
+dest = "/home/bitcoin/.bitcoin/bitcoin.conf"
+owner = "bitcoin"
+
+keys = [
+  "/bitcoind",
+]
