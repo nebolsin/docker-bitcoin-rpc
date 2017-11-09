@@ -64,7 +64,13 @@ RUN strip bin/bitcoin-cli bin/bitcoind bin/bitcoin-tx lib/libbitcoinconsensus.a 
 # ===============================================================
 
 FROM alpine:latest
-LABEL maintainer="Sergey Nebolsin <sergey@nebols.in>"
+ARG BUILD_DATE
+ARG VCS_REF
+
+LABEL maintainer="Sergey Nebolsin <sergey@nebols.in>" \
+      org.label-schema.build-date="${BUILD_DATE}" \
+      org.label-schema.vcs-ref="${VCS_REF}" \
+      org.label-schema.vcs-url="https://github.com/nebolsin/docker-bitcoin-rpc"
 
 RUN apk add --no-cache \
     bash \

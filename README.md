@@ -1,5 +1,6 @@
 nebolsin/bitcoin-rpc
 ====================
+[![](https://images.microbadger.com/badges/version/nebolsin/bitcoin-rpc.svg)](https://microbadger.com/images/nebolsin/bitcoin-rpc)[![](https://images.microbadger.com/badges/image/nebolsin/bitcoin-rpc.svg)](https://microbadger.com/images/nebolsin/bitcoin-rpc)[![](https://images.microbadger.com/badges/commit/nebolsin/bitcoin-rpc.svg)](https://microbadger.com/images/nebolsin/bitcoin-rpc)
 
 A minimalistic Docker image for running Bitcoin Core node in RPC mode.
 
@@ -27,4 +28,3 @@ Docker image:
 
 * [Bitcoin Core](https://github.com/bitcoin/bitcoin/blob/master/COPYING)
 * [confd](https://github.com/kelseyhightower/confd/blob/master/LICENSE)
-

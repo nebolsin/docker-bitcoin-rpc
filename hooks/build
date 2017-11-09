@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -o errexit
+
+: ${SOURCE_BRANCH:="$(git symbolic-ref --short -q HEAD)"}
+: ${SOURCE_COMMIT:="$(git rev-parse --short HEAD)"}
+: ${DOCKER_REPO:="nebolsin/bitcoin-rpc"}
+: ${CACHE_TAG:="latest"}
+: ${IMAGE_NAME:="${DOCKER_REPO}:${CACHE_TAG}"}
+
+BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+docker build \
+  --build-arg "VCS_REF=$SOURCE_COMMIT" \
+  --build-arg "BUILD_DATE=$BUILD_DATE" \
+  --tag "${IMAGE_NAME}" .
