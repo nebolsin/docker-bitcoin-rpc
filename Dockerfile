@@ -1,15 +1,3 @@
-FROM alpine:latest as confd
-LABEL maintainer="Sergey Nebolsin <sergey@nebols.in>"
-
-ENV CONFD_VERSION=0.14.0
-ENV CONFD_RELEASE="https://github.com/kelseyhightower/confd/releases/download/v${CONFD_VERSION}/confd-${CONFD_VERSION}-linux-amd64"
-
-RUN apk add --no-cache curl ca-certificates \
- && curl -L -o /usr/local/bin/confd "${CONFD_RELEASE}" \
- && chmod +x /usr/local/bin/confd
-
-# ===============================================================
-
 FROM alpine:latest as bitcoind
 LABEL maintainer="Sergey Nebolsin <sergey@nebols.in>"
 
@@ -44,6 +32,7 @@ RUN wget -O- https://bitcoin.org/laanwj-releases.asc | gpg --import \
  && tar -xzf bitcoin-${BITCOIN_VERSION}.tar.gz
 
 WORKDIR /app/bitcoin-${BITCOIN_FOLDER_VERSION}
+RUN sed -i 's|sys/fcntl.h|fcntl.h|g' src/compat.h
 RUN ./autogen.sh
 RUN ./configure \
     --prefix=${BITCOIN_PREFIX} \
@@ -60,6 +49,10 @@ RUN make install -j 4
 
 WORKDIR "${BITCOIN_PREFIX}"
 RUN strip bin/bitcoin-cli bin/bitcoind bin/bitcoin-tx lib/libbitcoinconsensus.a lib/libbitcoinconsensus.so.0.0.0
+
+# ===============================================================
+
+FROM nebolsin/confd as confd
 
 # ===============================================================
 
@@ -87,7 +80,7 @@ ENV BITCOIND_DATADIR=/home/bitcoin/.bitcoin
 ENV BITCOIND_PORT=8333
 ENV BITCOIND_RPCPORT=8332
 
-COPY --from=confd /usr/local/bin/confd /usr/local/bin/confd
+COPY --from=confd /app/bin/confd /usr/local/bin/confd
 COPY --from=bitcoind /opt/bitcoin /opt/bitcoin
 
 COPY templates /etc/confd/templates/
@@ -97,10 +90,9 @@ COPY docker-entrypoint.sh /entrypoint.sh
 WORKDIR "${BITCOIND_DATADIR}"
 
 VOLUME ["${BITCOIND_DATADIR}"]
-
-ENTRYPOINT ["/entrypoint.sh"]
-HEALTHCHECK CMD ["/entrypoint.sh", "bitcoin-cli", "getinfo"]
-
 EXPOSE ${BITCOIND_PORT} ${BITCOIND_RPC_PORT}
 
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["bitcoind"]
+
+HEALTHCHECK CMD ["/entrypoint.sh", "bitcoin-cli", "getinfo"]

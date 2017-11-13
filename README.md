@@ -1,6 +1,8 @@
 nebolsin/bitcoin-rpc
 ====================
-[![](https://images.microbadger.com/badges/version/nebolsin/bitcoin-rpc.svg)](https://microbadger.com/images/nebolsin/bitcoin-rpc)[![](https://images.microbadger.com/badges/image/nebolsin/bitcoin-rpc.svg)](https://microbadger.com/images/nebolsin/bitcoin-rpc)[![](https://images.microbadger.com/badges/commit/nebolsin/bitcoin-rpc.svg)](https://microbadger.com/images/nebolsin/bitcoin-rpc)
+[![](https://images.microbadger.com/badges/version/nebolsin/bitcoin-rpc.svg)](https://microbadger.com/images/nebolsin/bitcoin-rpc)
+[![](https://images.microbadger.com/badges/image/nebolsin/bitcoin-rpc.svg)](https://microbadger.com/images/nebolsin/bitcoin-rpc)
+[![](https://images.microbadger.com/badges/commit/nebolsin/bitcoin-rpc.svg)](https://microbadger.com/images/nebolsin/bitcoin-rpc)
 
 A minimalistic Docker image for running Bitcoin Core node in RPC mode.
 
@@ -12,9 +14,14 @@ Usage
 -----
 
 ```shell
-> docker run --rm -it nebolsin/bitcoin-rpc \
-    -e BITCOIND_PRINTTOCONSOLE=1 
-    -e BITCOIND_TESTNET=1
+> docker run --rm \
+    -v ./.data:/home/bitcoin/.bitcoin \
+    -p 8332:8332 \
+    -p 8333:8333 \
+    -e BITCOIND_PRINTTOCONSOLE=1 \
+    -e BITCOIND_TESTNET=1 \
+    -e BITCOIND_PRUNE=2048 \
+    -it nebolsin/bitcoin-rpc
 ```
 
 License
